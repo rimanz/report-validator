@@ -57,9 +57,13 @@ def normalize_approvals(df):
     df.index = df.index.astype(str).str.strip()
     return df
 
+def remove_redundant_duplicates(df):
+    return df.reset_index().drop_duplicates().set_index(df.index.name)
+
 def find_lpp_discrepencies(df, approval_df):
-    approval_subset = approval_df.loc[df.index]
-    result = df.compare(approval_subset, keep_shape=False, keep_equal=False, result_names=("Report", "Approval"))
+    approval_subset = remove_redundant_duplicates(approval_df.loc[df.index])
+    clean_df = remove_redundant_duplicates(df)
+    result = clean_df.compare(approval_subset, keep_shape=False, keep_equal=False, result_names=("Report", "Approval"))
 
     if result.size > 0:
         print(result)
