@@ -98,3 +98,29 @@ def get_ctns_from_seq(seq_str):
         a, b = i.split("-")
         total += int(b) - int(a) + 1
     return total
+
+def generate_lpp_upload_file(df):
+    """
+    Takes a dataframe containing approval data
+    Creates an excel file (upload.xls) that conforms to uploading formats used by the system
+    Returns a dataframe that constains data inside upload.xls file for further inspection if required
+    """
+    column_labels = [
+        'S/O', 'CONSIGNEE', 'SHIPPER', 'PKGS', 'PKG UNIT', 'QTY', 'QTY UNIT', 'CBM', 'CGO WT', 'PO', 'STYLE', 'ITEM', 'DIV', 'CAT', 'WHS'
+    ]
+    upload_df = df[[
+        'Order No', 'Booking Cartons Qty', 'Booking Qty', 'Booking CBM', 'Booking Weight Gross Kg', 'Order No', 'Model', 'DC', 'Brand'
+    ]]
+    upload_df.insert(1, "Consignee", "LPP S.A")
+    upload_df.insert(2, "Shipper", ".")
+    upload_df.insert(4, "Pkg Unit", "CARTON")
+    upload_df.insert(6, "QTY Unit", "PCS")
+    upload_df.insert(12, "div", "")
+    upload_df.insert(13, "cat", "")
+    upload_df.columns = column_labels
+
+    rows = [upload_df.columns.tolist()] + upload_df.values.tolist()
+    sheet = pe.Sheet(rows, name="Sheet 1")
+    sheet.save_as('./data/upload.xls')
+    return upload_df
+    
