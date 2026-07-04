@@ -117,3 +117,6 @@ dmypy.json
 # jupyterlite
 *.doit.db
 _output
+
+# Exclude data files:
+content/data
