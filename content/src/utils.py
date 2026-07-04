@@ -1,4 +1,5 @@
 import numpy as np
+import pyexcel as pe
 
 def cleanup_df(df):
     """
@@ -79,7 +80,12 @@ def remove_redundant_duplicates(df):
 def find_lpp_discrepencies(df, approval_df):
     approval_subset = remove_redundant_duplicates(approval_df.loc[df.index])
     clean_df = remove_redundant_duplicates(df)
-    result = clean_df.compare(approval_subset, keep_shape=False, keep_equal=False, result_names=("Report", "Approval"))
+    result = clean_df.compare(
+        approval_subset,
+        keep_shape=False,
+        keep_equal=False, 
+        result_names=("Report", "Approval")
+        )
 
     if result.size == 0:
         print("==> No discrepancies found between approvals and report!")
@@ -106,10 +112,12 @@ def generate_lpp_upload_file(df):
     Returns a dataframe that constains data inside upload.xls file for further inspection if required
     """
     column_labels = [
-        'S/O', 'CONSIGNEE', 'SHIPPER', 'PKGS', 'PKG UNIT', 'QTY', 'QTY UNIT', 'CBM', 'CGO WT', 'PO', 'STYLE', 'ITEM', 'DIV', 'CAT', 'WHS'
+        'S/O', 'CONSIGNEE', 'SHIPPER', 'PKGS', 'PKG UNIT', 'QTY', 'QTY UNIT', 'CBM', 'CGO WT', 'PO',
+        'STYLE', 'ITEM', 'DIV', 'CAT', 'WHS'
     ]
     upload_df = df[[
-        'Order No', 'Booking Cartons Qty', 'Booking Qty', 'Booking CBM', 'Booking Weight Gross Kg', 'Order No', 'Model', 'DC', 'Brand'
+        'Order No', 'Booking Cartons Qty', 'Booking Qty', 'Booking CBM', 'Booking Weight Gross Kg',
+        'Order No', 'Model', 'DC', 'Brand'
     ]]
     upload_df.insert(1, "Consignee", "LPP S.A")
     upload_df.insert(2, "Shipper", ".")
